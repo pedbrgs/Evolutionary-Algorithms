@@ -64,7 +64,7 @@ class DifferentialEvolution():
             raise ValueError("Scaling factor should be in the range [0, 2].")
         self.scaling_factor = scaling_factor
         if crossover_probability < 0 or crossover_probability > 1:
-            raise ValueError("Crossover probability shoulde be in the range [0, 1].")
+            raise ValueError("Crossover probability should be in the range [0, 1].")
         self.crossover_probability = crossover_probability
         self.n_dim = n_dim
         self.max_generations = max_generations
