@@ -1,3 +1,4 @@
+import logging
 import numpy as np
 from tqdm import tqdm
 
@@ -185,3 +186,38 @@ class DifferentialEvolution():
         progress_bar.close()
 
         return pop, fitness
+
+
+def schaffern4(x):
+    """Schaffer function N. 4."""
+    tmp1 = np.power(np.cos(np.sin(np.absolute(np.power(x[0],2)-np.power(x[1],2)))),2)-0.5
+    tmp2 = np.power(1+0.001*(np.power(x[0],2)+np.power(x[1],2)),2)
+    return 0.5+tmp1/tmp2
+
+
+if __name__ == '__main__':
+
+    # Initialize logger with info level
+    logging.basicConfig(encoding="utf-8", level=logging.INFO)
+    # Reset handlers
+    logging.getLogger().handlers = []
+    # Add a custom handler
+    handler = logging.StreamHandler()
+    handler.setFormatter(logging.Formatter('%(message)s'))
+    logging.getLogger().addHandler(handler)
+
+    optimizer = DifferentialEvolution(
+        n_dim=2,
+        pop_size=40,
+        scaling_factor=1.0,
+        crossover_probability=0.25,
+        max_generations=5000,
+        bounds=(-100, 100),
+        maximization=False,
+        fitness_function=schaffern4
+    )
+
+    pop, fitness = optimizer.evolve()
+
+    logging.info(f"Best solution: {optimizer.best_solution}")
+    logging.info(f"Best fitness: {optimizer.best_fitness}")
