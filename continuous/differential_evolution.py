@@ -6,9 +6,9 @@ from tqdm import tqdm
 class DifferentialEvolution():
     """Differential Evolution (DE) algorithm (rand/1/exp).
 
-    R. Storn and K. Price, "Differential evolution - A Simple and efﬁcient adaptive scheme for
-    global optimization over continuous spaces," International Computer Science Institute, Tech.
-    Rep. TR-95-012, (1995).
+    Storn, Rainer, and Kenneth Price. "Differential Evolution - A Simple and Efficient Heuristic
+    for Global Optimization over Continuous Spaces" Journal of global optimization 11 (1997):
+    341-359.
 
     Attributes
     ----------
