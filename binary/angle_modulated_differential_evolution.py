@@ -168,7 +168,7 @@ class AngleModulatedDifferentialEvolution():
         return best_solution, best_fitness
 
     def _angle_modulation_function(self, coeffs: np.ndarray):
-        """Homomorphous mapping between binary-valued and continous-valued space."""
+        """Homomorphous mapping between binary-valued and continuous-valued space."""
         a, b, c, d = coeffs
         x = np.linspace(0, 1, self.n_dim)
         trig_function = np.sin(2 * np.pi * (x - a) * b * np.cos(2 * np.pi * (x - a) * c)) + d
