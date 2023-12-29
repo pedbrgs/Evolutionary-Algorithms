@@ -81,7 +81,7 @@ class AngleModulatedDifferentialEvolution():
         self.maximization = maximization
         self.fitness_function = fitness_function
 
-    def _init_population(self):
+    def _init_population(self) -> np.ndarray:
         """Randomly initializes individuals from the population.
 
         The task of solving a binary-valued problem is reduced to a 4-dimensional problem,
@@ -94,7 +94,7 @@ class AngleModulatedDifferentialEvolution():
         )
         return pop
 
-    def _eval_population(self, pop: np.ndarray):
+    def _eval_population(self, pop: np.ndarray) -> np.ndarray:
         """Evaluate all individuals of the population."""
         fitness = np.zeros(self.pop_size)
         for i, indiv in enumerate(pop):
@@ -102,14 +102,15 @@ class AngleModulatedDifferentialEvolution():
             fitness[i] = self.fitness_function(bit_vector)
         return fitness
 
-    def _decode_population(self, pop: np.ndarray):
+    def _decode_population(self, pop: np.ndarray) -> np.ndarray:
         """Decode all individuals of the population to the original binary-valued space."""
         decoded_pop = list()
         for indiv in pop:
             decoded_pop.append(self._angle_modulation_function(indiv))
+        decoded_pop = np.array(decoded_pop)
         return decoded_pop
 
-    def _select_solutions(self, pop: np.ndarray, target_vector_idx: float):
+    def _select_solutions(self, pop: np.ndarray, target_vector_idx: float) -> np.ndarray:
         """Select 3 solutions randomly from the population.
 
         These solutions must be different from each other and different from the target vector.
@@ -119,13 +120,13 @@ class AngleModulatedDifferentialEvolution():
         selected_solutions = pop[selected_solution_idxs].copy()
         return selected_solutions
 
-    def _mutation(self, pop: np.ndarray, target_vector_idx: float):
+    def _mutation(self, pop: np.ndarray, target_vector_idx: float) -> np.ndarray:
         """Perform difference-vector based mutation."""
         indiv_1, indiv_2, indiv_3 = self._select_solutions(pop, target_vector_idx)
         donor_vector = indiv_1 + self.scaling_factor*(indiv_2 - indiv_3)
         return donor_vector
 
-    def _exponential_crossover(self, target_vector: np.ndarray, donor_vector: np.ndarray):
+    def _exponential_crossover(self, target_vector: np.ndarray, donor_vector: np.ndarray) -> np.ndarray:
         """Perform exponential crossover."""
         n = np.random.choice(range(self.n_coeffs))
         trial_vector = np.zeros(self.n_coeffs)
@@ -142,12 +143,12 @@ class AngleModulatedDifferentialEvolution():
                 break
         return trial_vector
 
-    def _apply_boundary_constraints(self, trial_vectors: np.ndarray):
+    def _apply_boundary_constraints(self, trial_vectors: np.ndarray) -> np.ndarray:
         """Apply boundary constraints on trial vectors."""
         trial_vectors = np.clip(trial_vectors, a_min=self.bounds[0], a_max=self.bounds[1])
         return trial_vectors
 
-    def _greedy_selection(self, pops: np.ndarray, fevals: np.ndarray):
+    def _greedy_selection(self, pops: list, fevals: list) -> tuple[np.ndarray, np.ndarray]:
         """Perform greedy selection."""
         if self.maximization:
             pop_idxs = np.argmax(fevals, axis=0)
@@ -157,7 +158,7 @@ class AngleModulatedDifferentialEvolution():
         fitness = np.array([fevals[pop_idx][indiv_idx] for indiv_idx, pop_idx in enumerate(pop_idxs)])
         return pop, fitness
 
-    def _get_best_solution(self, pop: np.ndarray, fitness: np.ndarray):
+    def _get_best_solution(self, pop: np.ndarray, fitness: np.ndarray) -> tuple[np.ndarray, float]:
         """Get the current best solution ans its evaluation."""
         if self.maximization:
             best_idx = np.argmax(fitness)
@@ -167,7 +168,7 @@ class AngleModulatedDifferentialEvolution():
         best_fitness = fitness[best_idx].copy()
         return best_solution, best_fitness
 
-    def _angle_modulation_function(self, coeffs: np.ndarray):
+    def _angle_modulation_function(self, coeffs: np.ndarray) -> np.ndarray:
         """Homomorphous mapping between binary-valued and continuous-valued space."""
         a, b, c, d = coeffs
         x = np.linspace(0, 1, self.n_dim)
@@ -175,7 +176,7 @@ class AngleModulatedDifferentialEvolution():
         bit_vector = (trig_function > 0).astype(int)
         return bit_vector
 
-    def evolve(self):
+    def evolve(self) -> tuple[np.ndarray, np.ndarray]:
         """Evolve the population."""
 
         pop = self._init_population()
@@ -219,7 +220,7 @@ class AngleModulatedDifferentialEvolution():
         return pop, fitness
 
 
-def subset_sum_function(bit_vector: np.ndarray):
+def subset_sum_function(bit_vector: np.ndarray) -> float:
     """The Subset Sum Problem (SSP).
 
     Given n positive integers w1,…,wn, find a combination amongst them such that their sum is the
